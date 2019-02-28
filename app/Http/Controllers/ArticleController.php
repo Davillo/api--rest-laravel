@@ -10,10 +10,9 @@ use App\Http\Resources\Article as ArticleResource;
 class ArticleController extends Controller
 {
 
-    public function index()
-    {
+    public function index(){
         //get articles
-        $articles = Article::paginate(15);
+        $articles = Article::orderBy('created_at','desc')->paginate(5);
         //return the collection of articles as a resource
         return ArticleResource::collection($articles);
     }
@@ -25,8 +24,7 @@ class ArticleController extends Controller
     }
 
 
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $article = $request->isMethod('put') ? Article::findOrFail($request->article_id) : new Article;
         $article->id = $request->input('article_id');
         $article->title = $request->input('title');
@@ -35,28 +33,23 @@ class ArticleController extends Controller
         if($article->save()){
             return new ArticleResource($article);
         }
-
     }
 
 
-    public function show($id)
-    {
+    public function show($id){
         //get single article
         $article = Article::findOrFail($id);
         //return single article as resource
         return new ArticleResource($article);
-
     }
 
 
-    public function destroy($id)
-    {
+    public function destroy($id){
            //get single article
            $article = Article::findOrFail($id);
 
            if($article->delete()){
             return new ArticleResource($article);
            }
-
     }
 }
